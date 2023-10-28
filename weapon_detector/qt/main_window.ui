@@ -28,7 +28,34 @@
         <string>Детекция</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout">
-        <item row="2" column="0">
+        <item row="0" column="0">
+         <widget class="QComboBox" name="select_files">
+          <property name="layoutDirection">
+           <enum>Qt::LeftToRight</enum>
+          </property>
+          <item>
+           <property name="text">
+            <string>Указать файл(ы) для детекции по изображениям</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Указать файл(ы) для детекции по видео</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Указать путь до директории с изображениями</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Указать путь до директории с видео</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="1" column="0">
          <widget class="QWidget" name="widget" native="true">
           <layout class="QGridLayout" name="gridLayout_2">
            <item row="0" column="0">
@@ -61,47 +88,6 @@
             </widget>
            </item>
           </layout>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QComboBox" name="select_files">
-          <property name="layoutDirection">
-           <enum>Qt::LeftToRight</enum>
-          </property>
-          <item>
-           <property name="text">
-            <string>Указать файл(ы) для детекции по изображениям</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Указать файл(ы) для детекции по видео</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Указать путь до директории с изображениями</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Указать путь до директории с видео</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QComboBox" name="select_model">
-          <item>
-           <property name="text">
-            <string>Модель бинарной классификации</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Модель категориальной классификации</string>
-           </property>
-          </item>
          </widget>
         </item>
        </layout>

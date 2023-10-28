@@ -86,7 +86,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.result_model = None
             self.result_func = None
             self.model_path = ""
-            self.finish_detecting(result)
+            if result:
+                self.finish_detecting(result)
         else:
             QtWidgets.QMessageBox.warning(
                 self,
@@ -129,6 +130,14 @@ class MainWindow(QtWidgets.QMainWindow):
             self.progress_bar.setValue(int(progress))
             self.progress_bar.cancel()
             return exception.value
+        except Exception as exception:
+            self.progress_bar.cancel()
+            QtWidgets.QMessageBox.warning(
+                self,
+                "Детекция прервана!",
+                exception.value,
+            )
+            return None
 
     def finish_detecting(self, info: list) -> None:
         QtWidgets.QMessageBox.warning(

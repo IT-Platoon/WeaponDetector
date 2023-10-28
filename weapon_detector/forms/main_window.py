@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/run/media/zzarryadd/E602B7E902B7BD3D/Users/Admin/YandexDisk/coding/Hakatons/weapon_detector/weapon_detector/qt/main_window.ui'
+# Form implementation generated from reading ui file '/run/media/zzarryadd/E602B7E902B7BD3D1/Users/Admin/YandexDisk/coding/Hakatons/weapon_detector/weapon_detector/qt/main_window.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.10
 #
@@ -26,6 +26,14 @@ class Ui_DetectionWindow(object):
         self.tab.setObjectName("tab")
         self.gridLayout = QtWidgets.QGridLayout(self.tab)
         self.gridLayout.setObjectName("gridLayout")
+        self.select_files = QtWidgets.QComboBox(self.tab)
+        self.select_files.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.select_files.setObjectName("select_files")
+        self.select_files.addItem("")
+        self.select_files.addItem("")
+        self.select_files.addItem("")
+        self.select_files.addItem("")
+        self.gridLayout.addWidget(self.select_files, 0, 0, 1, 1)
         self.widget = QtWidgets.QWidget(self.tab)
         self.widget.setObjectName("widget")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.widget)
@@ -40,20 +48,7 @@ class Ui_DetectionWindow(object):
         self.load_button.setIconSize(QtCore.QSize(64, 64))
         self.load_button.setObjectName("load_button")
         self.gridLayout_2.addWidget(self.load_button, 0, 0, 1, 1)
-        self.gridLayout.addWidget(self.widget, 2, 0, 1, 1)
-        self.select_files = QtWidgets.QComboBox(self.tab)
-        self.select_files.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.select_files.setObjectName("select_files")
-        self.select_files.addItem("")
-        self.select_files.addItem("")
-        self.select_files.addItem("")
-        self.select_files.addItem("")
-        self.gridLayout.addWidget(self.select_files, 0, 0, 1, 1)
-        self.select_model = QtWidgets.QComboBox(self.tab)
-        self.select_model.setObjectName("select_model")
-        self.select_model.addItem("")
-        self.select_model.addItem("")
-        self.gridLayout.addWidget(self.select_model, 1, 0, 1, 1)
+        self.gridLayout.addWidget(self.widget, 1, 0, 1, 1)
         self.tabWidget.addTab(self.tab, "")
         self.tab_5 = QtWidgets.QWidget()
         self.tab_5.setObjectName("tab_5")
@@ -73,13 +68,11 @@ class Ui_DetectionWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.load_button.setToolTip(_translate("MainWindow", "Загрузить данные для детекции"))
         self.select_files.setItemText(0, _translate("MainWindow", "Указать файл(ы) для детекции по изображениям"))
         self.select_files.setItemText(1, _translate("MainWindow", "Указать файл(ы) для детекции по видео"))
         self.select_files.setItemText(2, _translate("MainWindow", "Указать путь до директории с изображениями"))
         self.select_files.setItemText(3, _translate("MainWindow", "Указать путь до директории с видео"))
-        self.select_model.setItemText(0, _translate("MainWindow", "Модель бинарной классификации"))
-        self.select_model.setItemText(1, _translate("MainWindow", "Модель категориальной классификации"))
+        self.load_button.setToolTip(_translate("MainWindow", "Загрузить данные для детекции"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Детекция"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_5), _translate("MainWindow", "Справка"))
 from . import resources
