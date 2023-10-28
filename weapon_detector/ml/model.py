@@ -2,25 +2,17 @@ import os
 from datetime import datetime
 from typing import Callable
 
-from ultralytics import YOLO
-import torch
 import cv2
+import torch
+from ultralytics import YOLO
 
 from .utils import (
-    save_imgs,
-
     analyse_target_class_by_conf,
     convert_images_to_video,
-    convert_images_to_video,
-    get_directory_name,
-
-    create_submission_csv,
     create_logfile,
-
-    analyse_target_class_by_conf,
-    analyse_target_class_by_count,
-    convert_images_to_video,
-    convert_images_to_video,
+    create_submission_csv,
+    get_directory_name,
+    save_imgs,
 )
 
 
@@ -37,15 +29,15 @@ def load_model(path: str) -> YOLO:
 
 
 def predict_one(
-        model,
-        filename: str,
-        analyzer: Callable = analyse_target_class_by_conf,
-    ) -> dict:
+    model,
+    filename: str,
+    analyzer: Callable = analyse_target_class_by_conf,
+) -> dict:
     """ Предсказание.
     model: ранее загруженная модель для предсказания.
     filename: str - название ОДНОГО файла или url
 
-    return: dict - результат предсказания в формате 
+    return: dict - результат предсказания в формате
     {
         'filename': str,  # Название изображения.
         'classes': list,  # Классы, которые имеются на изображении.
@@ -91,10 +83,10 @@ def predict_one(
 
 
 def run_detection_images(
-        model,
-        list_filenames: list[str],
-        dir_save: str
-    ) -> list[dict]:
+    model,
+    list_filenames: list[str],
+    dir_save: str
+) -> list[dict]:
     """Запуск обработки изображений."""
     list_final_dict = []
     for i, filename in enumerate(list_filenames):
@@ -118,17 +110,17 @@ def run_detection_images(
 
 
 def run_detection_videos(
-        model,
-        list_filenames: list[str],
-        dir_save: str,
-    ) -> None:
+    model,
+    list_filenames: list[str],
+    dir_save: str,
+) -> None:
     """Запуск обработки видео."""
 
     # Создание папки
     if not os.path.isdir(dir_save):
         os.mkdir(dir_save)
     for i, filename in enumerate(list_filenames):
-        cap = cv2.VideoCapture(filename) 
+        cap = cv2.VideoCapture(filename)
         dir_name = get_directory_name()
         dir_name = os.path.join(dir_save, dir_name)
         os.mkdir(dir_name)
@@ -178,10 +170,10 @@ def run_detection_videos(
 
 
 def run_detection_webcam(
-        model,
-        source_webcam: str,
-        dir_save: str,
-    ) -> None:
+    model,
+    source_webcam: str,
+    dir_save: str,
+) -> None:
     """Запуск детектирования в реальном времени по веб-камере."""
 
     # Создание папки

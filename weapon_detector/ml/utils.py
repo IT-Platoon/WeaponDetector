@@ -1,11 +1,10 @@
 import os
-from typing import Callable, Union
 from datetime import datetime
 
 import cv2
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 
 
 def analyse_target_class_by_conf(classes: list, conf: list) -> str:
@@ -67,7 +66,7 @@ def create_submission_csv(
     filename_csv: str,
     list_final_dict: list,
     dir_save: str,
-    ) -> None:
+) -> None:
     """ Создание csv-файла с двумя колонками: (filename, target)
     для отправки submission.
 >>>>>>> origin/ml
@@ -102,7 +101,7 @@ def create_submission_csv(
             testing = elem
             new_list_filename.append(testing)
 
-    df = pd.DataFrame({'name': new_list_filename,'class': list_target,})
+    df = pd.DataFrame({'name': new_list_filename, 'class': list_target})
     df.to_csv(os.path.join(dir_save, filename_csv), sep=";", index=False)
 
 
@@ -139,12 +138,12 @@ def convert_images_to_video(images: list[np.ndarray], filename: str):
     fps = 24
 
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    
+
     video = cv2.VideoWriter(filename, fourcc, fps, (width, height))
-    
+
     for img in images:
         # img =  cv2.cvtColor(img, cv2.COLO)
         video.write(img)
-    
+
     video.release()
     return video

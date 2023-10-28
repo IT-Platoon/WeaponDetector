@@ -9,7 +9,12 @@ from weapon_detector.constants import (
     MethodsLoad,
 )
 from weapon_detector.forms import Ui_DetectionWindow
-from weapon_detector.ml import load_model, run_detection_webcam, run_detection_images, run_detection_videos
+from weapon_detector.ml import (
+    load_model,
+    run_detection_images,
+    run_detection_videos,
+    run_detection_webcam,
+)
 from weapon_detector.palettes import main_window_styles
 
 from .result_dialog import ResultDialog
@@ -79,9 +84,9 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.files:
             self.model_path, _ = QtWidgets.QFileDialog.getOpenFileName(
                 self,
-                f"Выберите модель машинного обучения",
+                "Выберите модель машинного обучения",
                 "/",
-                f"PyTorch (*.pt)",
+                "PyTorch (*.pt)",
             )
             self.result_model = load_model(self.model_path)
             result = self.compute_result()

@@ -1,8 +1,8 @@
 """Меняем датасет файлы"""
 
 
-import os
 import fnmatch
+import os
 
 
 def main(path_to):
