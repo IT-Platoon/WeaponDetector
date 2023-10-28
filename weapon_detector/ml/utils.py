@@ -1,5 +1,6 @@
 import os
 from typing import Callable, Union
+from datetime import datetime
 
 import cv2
 import numpy as np
@@ -47,14 +48,29 @@ def analyse_target_class_by_count(classes: list, conf: list = None) -> str:
     return max(summator, key=summator.get) if summator else None
 
 
-def create_csv_custom(
+def get_directory_name() -> str:
+    bad_symbols = (" ", ".", ":")
+    now_datetime = []
+    for symbol in str(datetime.now()):
+        now_datetime.append(
+            symbol if symbol not in bad_symbols else "-"
+        )
+    return f"detection_{''.join(now_datetime)}"
+
+
+def create_logfile(log_list: list, filename_txt: str) -> None:
+    with open(filename_txt, '+a') as f:
+        f.write(f'{log_list[0]} {log_list[1]}\n')
+
+
+def create_submission_csv(
     filename_csv: str,
     list_final_dict: list,
     dir_save: str,
-    analyzer: Union[Callable, list] = analyse_target_class_by_conf,
-    submission_flag: bool = False,
-) -> None:
-    """ Создание csv-файла с двумя колонками: (filename, target).
+    ) -> None:
+    """ Создание csv-файла с двумя колонками: (filename, target)
+    для отправки submission.
+>>>>>>> origin/ml
     filename_csv: str - название csv файла.
     list_final_dict: list[dict] - список предсказанных изображений.
     analyzer: function - функция подсчёта таргета на изображении.
@@ -64,26 +80,18 @@ def create_csv_custom(
     list_target = []
 
     # Определяю target каждого изображения.
-    for idx, final_dict in enumerate(list_final_dict):
+    for final_dict in list_final_dict:
 
         list_filename.append(final_dict['filename'])
-
-        if isinstance(analyzer, Callable):
-            analyzed_target_class = analyzer(
-                final_dict['classes'],
-                final_dict['conf'],
-            )
-        else:
-            analyzed_target_class = analyzer[idx][0]
+        target_class = final_dict['target_image']
 
         # Классы для отправки решения хакатона.
-        if submission_flag:
-            if analyzed_target_class in ('weapons', 'short_weapons', 'long_weapons', 'other'):
-                analyzed_target_class = 1
-            else:
-                analyzed_target_class = 0
+        if target_class in ('weapons', 'short_weapons', 'long_weapons', 'other'):
+            target_class = 1
+        else:
+            target_class = 0
 
-        list_target.append(analyzed_target_class)
+        list_target.append(target_class)
 
     new_list_filename = []
     for elem in list_filename:
@@ -94,13 +102,7 @@ def create_csv_custom(
             testing = elem
             new_list_filename.append(testing)
 
-    df = pd.DataFrame(
-        {
-            'name': new_list_filename,
-            'class': list_target,
-        }
-    )
-
+    df = pd.DataFrame({'name': new_list_filename,'class': list_target,})
     df.to_csv(os.path.join(dir_save, filename_csv), sep=";", index=False)
 
 
@@ -108,7 +110,7 @@ def save_imgs(list_final_dict: list, dir_save: str) -> list[dict]:
     """ Сохранение всех предсказанных изображений с боксами.
     list_final_dict: list[dict] - предсказанные данные.
     dir_save: str - директория, в которую сохранить предсказанные изображения.
-    return: None """
+    return: list[dict] """
 
     # Создание папки
     if not os.path.isdir(dir_save):
