@@ -26,12 +26,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.reference.setPlainText(REFERENCE)
         self.ui.reference.setReadOnly(True)
         self.setStyleSheet(main_window_styles)
-        self.binary_model_path = "weapon_detector/ml/weights/best.pt"
-        self.categorial_model_path = "weapon_detector/ml/weights/best_categorial.pt"
-        self.binary_model = None
-        self.categorial_model = None
         self.result_model = None
         self.result_func = None
+        self.model_path = ""
         self.progress_bar = None
         self.view_result = None
 
@@ -78,18 +75,17 @@ class MainWindow(QtWidgets.QMainWindow):
             "/",
         )
         if self.files:
-            selected_model = self.ui.select_model.currentText()
-            if selected_model == Models.BINARY_MODEL:
-                if self.binary_model is None:
-                    self.binary_model = load_model(self.binary_model_path)
-                self.result_model = self.binary_model
-            elif selected_model == Models.CATEGORICAL_MODEL:
-                if self.categorial_model is None:
-                    self.categorial_model = load_model(self.categorial_model_path)
-                self.result_model = self.categorial_model
+            self.model_path, _ = QtWidgets.QFileDialog.getOpenFileName(
+                self,
+                f"Выберите модель машинного обучения",
+                "/",
+                f"PyTorch (*.pt)",
+            )
+            self.result_model = load_model(self.model_path)
             result = self.compute_result()
             self.result_model = None
             self.result_func = None
+            self.model_path = ""
             self.finish_detecting(result)
         else:
             QtWidgets.QMessageBox.warning(
