@@ -6,7 +6,7 @@ from ultralytics import YOLO
 import torch
 import cv2
 
-from utils import (
+from .utils import (
     save_imgs,
 
     analyse_target_class_by_conf,
@@ -134,10 +134,8 @@ def run_detection_videos(
     # Создание папки
     if not os.path.isdir(dir_save):
         os.mkdir(dir_save)
-
     for i, filename in enumerate(list_filenames):
         cap = cv2.VideoCapture(filename) 
-
         dir_name = get_directory_name()
         dir_name = os.path.join(dir_save, dir_name)
         os.mkdir(dir_name)
@@ -148,7 +146,6 @@ def run_detection_videos(
             count_frame += 1
             # Считываем кадр
             success, frame = cap.read()
-
             if success:
                 results = model(frame, verbose=False)
                 annotated_frame = results[0].plot()

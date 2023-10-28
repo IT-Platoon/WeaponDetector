@@ -5,11 +5,10 @@ goto %1
 :install
   python -m venv venv
   call "venv/Scripts/activate.bat"
+  pip install --no-binary opencv-python opencv-python
   pip install -Ur requirements.txt
   pip install torch torchvision --extra-index-url https://download.pytorch.org/whl/cpu
   pip install ultralytics
-  pip uninstall -y opencv-python
-  pip install opencv-python-headless
 goto end
   
 :build
