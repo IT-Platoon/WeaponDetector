@@ -53,6 +53,11 @@
             <string>Указать путь до директории с видео</string>
            </property>
           </item>
+          <item>
+           <property name="text">
+            <string>Детекция по видео-камере</string>
+           </property>
+          </item>
          </widget>
         </item>
         <item row="1" column="0">

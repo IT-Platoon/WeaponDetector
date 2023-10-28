@@ -96,13 +96,6 @@ def run_detection_images(
         dir_save: str
     ) -> list[dict]:
     """Запуск обработки изображений."""
-
-def run_detection_images(
-        model,
-        list_filenames: list[str],
-        dir_save: str
-    ) -> list[dict]:
-    """Запуск обработки изображений."""
     list_final_dict = []
     for i, filename in enumerate(list_filenames):
         final_dict = predict_one(model, filename)
@@ -186,8 +179,8 @@ def run_detection_videos(
 
 def run_detection_webcam(
         model,
+        source_webcam: str,
         dir_save: str,
-        source_webcam: str = '0',
     ) -> None:
     """Запуск детектирования в реальном времени по веб-камере."""
 
