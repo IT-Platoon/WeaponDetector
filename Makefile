@@ -29,7 +29,7 @@ build_linux:  ##@Code build in Application with Pyinstaller on Linux
 	make install_linux && \
 	. ./venv/bin/activate && \
 	pyinstaller $(APPLICATION_NAME).spec && \
-	cp -r ./venv/lib/python3.11/site-packages/ultralytics ./dist/$(APPLICATION_NAME)/_internal
+	cp -r ./venv/lib/python3.11/site-packages/ultralytics ./dist/$(APPLICATION_NAME)/$(APPLICATION_NAME)
 
 build_windows:  ##@Code build in Application with Pyinstaller on Windows
 	make install_windows && \
