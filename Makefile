@@ -1,7 +1,6 @@
 APPLICATION_NAME = weapon_detector
 
 install_linux: ##@Application Create Virtual Enviroment and Install Requirements on Linux
-	pip cache purge && \
 	python -m venv venv && \
 	source venv/bin/activate && \
 	pip install -Ur requirements.txt && \
@@ -9,7 +8,6 @@ install_linux: ##@Application Create Virtual Enviroment and Install Requirements
 	pip install opencv-python-headless
 
 install_windows: ##@Application Create Virtual Enviroment and Install Requirements on Windows
-	
 	python -m venv venv && \
 	activate venv/bin/activate && \
 	pip install -Ur requirements.txt && \
@@ -32,12 +30,12 @@ convert:  ##@Code convert .ui files and .qrc files in .py
 build_linux:  ##@Code build in Application with Pyinstaller on Linux
 	make install_linux && \
 	sudo pyinstaller $(APPLICATION_NAME).spec && \
-	cp -r ./venv/lib/python3.11/site-packages/ultralytics ./dist/$(APPLICATION_NAME)/
+	sudo cp -r ./venv/lib/python3.11/site-packages/ultralytics ./dist/$(APPLICATION_NAME)/_internal
 
 build_windows:  ##@Code build in Application with Pyinstaller on Windows
 	make install_windows && \
 	pyinstaller $(APPLICATION_NAME).spec && \
-	cp -r ./venv/lib/python3.11/site-packages/ultralytics ./dist/$(APPLICATION_NAME)/
+	cp -r ./venv/lib/python3.11/site-packages/ultralytics ./dist/$(APPLICATION_NAME)/_internal
 
 clean:  ##@Code Clean directory from garbage files
-	rm -fr *.pyc *.egg-info dist build venv
+	sudo rm -fr *.pyc *.egg-info dist build venv
