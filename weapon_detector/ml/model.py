@@ -5,7 +5,7 @@ from ultralytics import YOLO
 import torch
 import cv2
 
-from utils import (
+from .utils import (
     save_imgs,
     create_csv_custom,
     analyse_target_class_by_conf,

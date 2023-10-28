@@ -3,11 +3,11 @@ APPLICATION_NAME = weapon_detector
 install_linux: ##@Application Create Virtual Enviroment and Install Requirements on Linux
 	python -m venv venv && \
 	. ./venv/bin/activate && \
+	source venv/bin/activate && \
+	pip install --no-binary opencv-python opencv-python && \
 	pip install -Ur requirements.txt && \
 	pip install torch torchvision --extra-index-url https://download.pytorch.org/whl/cpu && \
-	pip install ultralytics && \
-	pip uninstall -y opencv-python && \
-	pip install opencv-python-headless
+	pip install ultralytics
 
 install_windows: ##@Application Create Virtual Enviroment and Install Requirements on Windows
 	./build.bat install

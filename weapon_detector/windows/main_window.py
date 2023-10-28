@@ -7,10 +7,9 @@ from weapon_detector.constants import (
     REFERENCE,
     RESULT_MESSAGE,
     MethodsLoad,
-    Models,
 )
 from weapon_detector.forms import Ui_DetectionWindow
-from weapon_detector.ml import load_model, run_detection
+from weapon_detector.ml import load_model, run_detection_images, run_detection_videos
 from weapon_detector.palettes import main_window_styles
 
 from .result_dialog import ResultDialog
@@ -39,9 +38,9 @@ class MainWindow(QtWidgets.QMainWindow):
         method_load = self.ui.select_files.currentText()
         if method_load in (MethodsLoad.GET_FILES_IMAGES, MethodsLoad.GET_FILES_VIDEOS):
             media_type, media, extensions, self.result_func = (
-                ("изображения", "Images", "*.jpeg *.jpg *.png", run_detection)
+                ("изображения", "Images", "*.jpeg *.jpg *.png", run_detection_images)
                 if method_load == MethodsLoad.GET_FILES_IMAGES else
-                ("видео файлы", "Videos", "*.mp4", run_detection)
+                ("видео файлы", "Videos", "*.mp4", run_detection_videos)
             )
             self.files, _ = QtWidgets.QFileDialog.getOpenFileNames(
                 self,
@@ -52,9 +51,9 @@ class MainWindow(QtWidgets.QMainWindow):
         elif method_load in (MethodsLoad.GET_DIRECTORY_IMAGES, MethodsLoad.GET_DIRECTORY_VIDEOS):
             try:
                 media_type, extensions, self.result_func = (
-                    ("изображений", right_extensions_images, run_detection)
+                    ("изображений", right_extensions_images, run_detection_images)
                     if method_load == MethodsLoad.GET_DIRECTORY_IMAGES else
-                    ("видео файлов", right_extensions_videos, run_detection)
+                    ("видео файлов", right_extensions_videos, run_detection_videos)
                 )
                 directory_to_load = QtWidgets.QFileDialog.getExistingDirectory(
                     self,
@@ -135,7 +134,7 @@ class MainWindow(QtWidgets.QMainWindow):
             QtWidgets.QMessageBox.warning(
                 self,
                 "Детекция прервана!",
-                exception.value,
+                str(exception),
             )
             return None
 
