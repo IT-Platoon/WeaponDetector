@@ -4,13 +4,17 @@ install_linux: ##@Application Create Virtual Enviroment and Install Requirements
 	python -m venv venv && \
 	source venv/bin/activate && \
 	pip install -Ur requirements.txt && \
+	pip install torch torchvision --extra-index-url https://download.pytorch.org/whl/cpu && \
+	pip install ultralytics && \
 	pip uninstall -y opencv-python && \
 	pip install opencv-python-headless
 
 install_windows: ##@Application Create Virtual Enviroment and Install Requirements on Windows
 	python -m venv venv && \
-	activate venv/bin/activate && \
+	activate venv/Scripts/activate && \
 	pip install -Ur requirements.txt && \
+	pip install torch torchvision --extra-index-url https://download.pytorch.org/whl/cpu && \
+	pip install ultralytics && \
 	pip uninstall -y opencv-python && \
 	pip install opencv-python-headless
 
