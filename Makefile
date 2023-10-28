@@ -33,8 +33,8 @@ convert:  ##@Code convert .ui files and .qrc files in .py
 
 build_linux:  ##@Code build in Application with Pyinstaller on Linux
 	make install_linux && \
-	sudo pyinstaller $(APPLICATION_NAME).spec && \
-	sudo cp -r ./venv/lib/python3.11/site-packages/ultralytics ./dist/$(APPLICATION_NAME)/_internal
+	pyinstaller $(APPLICATION_NAME).spec && \
+	cp -r ./venv/lib/python3.11/site-packages/ultralytics ./dist/$(APPLICATION_NAME)/_internal
 
 build_windows:  ##@Code build in Application with Pyinstaller on Windows
 	make install_windows && \
