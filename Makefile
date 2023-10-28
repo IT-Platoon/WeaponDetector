@@ -9,6 +9,15 @@ install_linux: ##@Application Create Virtual Enviroment and Install Requirements
 	pip uninstall -y opencv-python && \
 	pip install opencv-python-headless
 
+install_linux_ci_cd: ##@Application Create Virtual Enviroment and Install Requirements on Linux
+	python -m venv venv && \
+	./venv/bin/activate && \
+	pip install -Ur requirements.txt && \
+	pip install torch torchvision --extra-index-url https://download.pytorch.org/whl/cpu && \
+	pip install ultralytics && \
+	pip uninstall -y opencv-python && \
+	pip install opencv-python-headless
+
 install_windows: ##@Application Create Virtual Enviroment and Install Requirements on Windows
 	./build.bat install
 
@@ -27,6 +36,11 @@ convert:  ##@Code convert .ui files and .qrc files in .py
 
 build_linux:  ##@Code build in Application with Pyinstaller on Linux
 	make install_linux && \
+	pyinstaller $(APPLICATION_NAME).spec && \
+	cp -r ./venv/lib/python3.11/site-packages/ultralytics ./dist/$(APPLICATION_NAME)/_internal
+
+build_linux_ci_cd:  ##@Code build in Application with Pyinstaller on Linux
+	make install_linux_ci_cd && \
 	pyinstaller $(APPLICATION_NAME).spec && \
 	cp -r ./venv/lib/python3.11/site-packages/ultralytics ./dist/$(APPLICATION_NAME)/_internal
 
