@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from typing import Callable
 
 from ultralytics import YOLO
 import torch
@@ -7,11 +8,17 @@ import cv2
 
 from utils import (
     save_imgs,
-    create_csv_custom,
+
+    analyse_target_class_by_conf,
+    convert_images_to_video,
+    convert_images_to_video,
+    get_directory_name,
+
+    create_submission_csv,
+    create_logfile,
+
     analyse_target_class_by_conf,
     analyse_target_class_by_count,
-    convert_images_to_video,
-    convert_images_to_video,
 )
 
 
@@ -27,7 +34,11 @@ def load_model(path: str) -> YOLO:
     return model
 
 
-def predict_one(model, filename: str) -> dict:
+def predict_one(
+        model,
+        filename: str,
+        analyzer: Callable = analyse_target_class_by_conf,
+    ) -> dict:
     """ Предсказание.
     model: ранее загруженная модель для предсказания.
     filename: str - название ОДНОГО файла или url
@@ -63,7 +74,7 @@ def predict_one(model, filename: str) -> dict:
     count = len(classes)
 
     # Предсказанный класс для картинки.
-    target_image = analyse_target_class_by_count(classes, conf)
+    target_image = analyzer(classes, conf)
 
     # Результат предсказания хранится тут.
     final_dict = {
@@ -75,16 +86,6 @@ def predict_one(model, filename: str) -> dict:
         'img': img,
     }
     return final_dict
-
-
-def get_directory_name() -> str:
-    bad_symbols = (" ", ".", ":")
-    now_datetime = []
-    for symbol in str(datetime.now()):
-        now_datetime.append(
-            symbol if symbol not in bad_symbols else "-"
-        )
-    return f"detection_{''.join(now_datetime)}"
 
 
 def run_detection_images(
@@ -107,11 +108,10 @@ def run_detection_images(
     dir_name = get_directory_name()
     dir_save = os.path.join(dir_save, dir_name)
     list_final_dict = save_imgs(list_final_dict, dir_save)
-    create_csv_custom(
+    create_submission_csv(
         f"{dir_name}.csv",
         list_final_dict,
         dir_save,
-        submission_flag=True,
     )
     return list_final_dict
 
@@ -119,7 +119,7 @@ def run_detection_images(
 def run_detection_videos(
         model,
         list_filenames: list[str],
-        dir_save: str = None,
+        dir_save: str,
     ) -> None:
     """Запуск обработки видео."""
 
@@ -130,8 +130,14 @@ def run_detection_videos(
     for i, filename in enumerate(list_filenames):
         cap = cv2.VideoCapture(filename) 
 
+        dir_name = get_directory_name()
+        dir_name = os.path.join(dir_save, dir_name)
+        os.mkdir(dir_name)
+
+        count_frame = 0
         lst_images = []
         while cap.isOpened():
+            count_frame += 1
             # Считываем кадр
             success, frame = cap.read()
 
@@ -139,6 +145,15 @@ def run_detection_videos(
                 results = model(frame, verbose=False)
                 annotated_frame = results[0].plot()
                 lst_images.append(annotated_frame)
+
+                classes = []
+                for i in results[0].boxes.cls:
+                    classes.append(model.names[int(i)])
+
+                if len(classes) != 0:
+                    filename_txt = os.path.join(dir_name, 'log.txt')
+                    log_list = [f'{count_frame / 24} sec', classes]
+                    create_logfile(log_list, filename_txt)
 
                 annotated_frame = cv2.resize(
                     annotated_frame,
@@ -153,16 +168,46 @@ def run_detection_videos(
             else:
                 break  # Конец видео
 
-        if dir_save:
-            format_video = filename[-3:]
-            filename = f'{filename[:-4]}_annot.{format_video}'
-            path = os.path.join(dir_save, filename)
-            convert_images_to_video(lst_images, path)
+        format_video = filename[-3:]
+        filename = f'{filename[:-4]}_annot.{format_video}'
+        path = os.path.join(dir_name, filename)
+        convert_images_to_video(lst_images, path)
 
         # Закрытие окна
         cap.release()
         cv2.destroyAllWindows()
         yield i * 100 / len(list_filenames)
+
+
+def run_detection_webcam(
+        model,
+        dir_save: str,
+        source_webcam: str = '0',
+    ) -> None:
+    """Запуск детектирования в реальном времени по веб-камере."""
+
+    # Создание папки
+    if not os.path.isdir(dir_save):
+        os.mkdir(dir_save)
+
+    results = model.predict(source_webcam, show=True, stream=True)
+
+    dir_name = f'cam{source_webcam}_' + get_directory_name()
+    dir_save = os.path.join(dir_save, dir_name)
+    os.mkdir(dir_save)
+    filename_txt = os.path.join(dir_save, 'logs.txt')
+
+    for result in results:
+
+        classes = []
+        for i in result.boxes.cls:
+            classes.append(model.names[int(i)])
+
+        # Если найдено оружие - сохраняем в логи.
+        if len(classes) != 0:
+            datetime_now = datetime.now()
+            log_list = [datetime_now, classes]
+            create_logfile(log_list, filename_txt)
 
 
 if __name__ == '__main__':
@@ -175,3 +220,8 @@ if __name__ == '__main__':
             next(detection)
     except StopIteration as exception:
         print(exception.value)
+
+    # model = load_model('./weights/best_categorial.pt')
+    # list_filenames = '0'
+    # dir_save = './temp_results'
+    # detection = run_detection_webcam(model, list_filenames, dir_save)
