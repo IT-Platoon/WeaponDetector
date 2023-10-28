@@ -5,11 +5,9 @@ staticfiles/
 celerybeat-schedule
 .venv
 venv/
-model/weights/
 *.log
 coverage
 .vscode
-{{cookiecutter.project_slug}}/media/
 .pytest_cache/
 .ipython/
 .idea
@@ -22,10 +20,8 @@ images
 runs
 classification_model
 segmentation_model
-*.pt
 *.jpg
 *.png
 labels/
 *.cache
 *.csv
-weights/
