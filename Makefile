@@ -10,7 +10,7 @@ install_linux: ##@Application Create Virtual Enviroment and Install Requirements
 	pip install opencv-python-headless
 
 install_windows: ##@Application Create Virtual Enviroment and Install Requirements on Windows
-	./build.bat
+	./build.bat install
 
 format:  ##@Code Reformat code with isort and flake8
 	python3 -m flake8 $(APPLICATION_NAME) --config=./setup.cfg
@@ -31,6 +31,7 @@ build_linux:  ##@Code build in Application with Pyinstaller on Linux
 	sudo cp -r ./venv/lib/python3.11/site-packages/ultralytics ./dist/$(APPLICATION_NAME)/$(APPLICATION_NAME)
 
 build_windows:  ##@Code build in Application with Pyinstaller on Windows
+	make install_windows && \
 	./build.bat build
 
 clean:  ##@Code Clean directory from garbage files
