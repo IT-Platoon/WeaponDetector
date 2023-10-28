@@ -3,12 +3,15 @@ from datetime import datetime
 
 from ultralytics import YOLO
 import torch
+import cv2
 
-from .utils import (
+from utils import (
     save_imgs,
     create_csv_custom,
     analyse_target_class_by_conf,
     analyse_target_class_by_count,
+    convert_images_to_video,
+    convert_images_to_video,
 )
 
 
@@ -84,7 +87,13 @@ def get_directory_name() -> str:
     return f"detection_{''.join(now_datetime)}"
 
 
-def run_detection(model, list_filenames: list[str], dir_save: str) -> list[dict]:
+def run_detection_images(
+        model,
+        list_filenames: list[str],
+        dir_save: str
+    ) -> list[dict]:
+    """Запуск обработки изображений."""
+
     list_final_dict = []
     for i, filename in enumerate(list_filenames):
         final_dict = predict_one(model, filename)
@@ -107,11 +116,60 @@ def run_detection(model, list_filenames: list[str], dir_save: str) -> list[dict]
     return list_final_dict
 
 
+def run_detection_videos(
+        model,
+        list_filenames: list[str],
+        dir_save: str = None,
+    ) -> None:
+    """Запуск обработки видео."""
+
+    # Создание папки
+    if not os.path.isdir(dir_save):
+        os.mkdir(dir_save)
+
+    for i, filename in enumerate(list_filenames):
+        cap = cv2.VideoCapture(filename) 
+
+        lst_images = []
+        while cap.isOpened():
+            # Считываем кадр
+            success, frame = cap.read()
+
+            if success:
+                results = model(frame, verbose=False)
+                annotated_frame = results[0].plot()
+                lst_images.append(annotated_frame)
+
+                annotated_frame = cv2.resize(
+                    annotated_frame,
+                    dsize=(640, 640),
+                    interpolation=cv2.INTER_CUBIC,
+                )
+                cv2.imshow("Exit `q`", annotated_frame)
+
+                # Остановка по нажатию 'q'
+                if cv2.waitKey(1) & 0xFF == ord("q"):
+                    break
+            else:
+                break  # Конец видео
+
+        if dir_save:
+            format_video = filename[-3:]
+            filename = f'{filename[:-4]}_annot.{format_video}'
+            path = os.path.join(dir_save, filename)
+            convert_images_to_video(lst_images, path)
+
+        # Закрытие окна
+        cap.release()
+        cv2.destroyAllWindows()
+        yield i * 100 / len(list_filenames)
+
+
 if __name__ == '__main__':
-    model = load_model('./weights/detect/2classes_yolo8s_seed0_epoch15_batch8_imgsz640/weights/best.pt')
-    list_filenames = os.listdir('./temp_images')
+    model = load_model('./weights/best_categorial.pt')
+    list_filenames = ['./чвк.mp4']
     dir_save = './temp_results'
-    detection = run_detection(model, list_filenames, dir_save)
+    detection = run_detection_videos(model, list_filenames, dir_save)
     try:
         while True:
             next(detection)

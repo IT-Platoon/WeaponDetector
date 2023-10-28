@@ -47,47 +47,6 @@ def analyse_target_class_by_count(classes: list, conf: list = None) -> str:
     return max(summator, key=summator.get) if summator else None
 
 
-def create_csv(
-    filename_csv: str,
-    list_final_dict: list,
-    dir_save: str,
-    analyzer: Union[Callable, list] = analyse_target_class_by_conf,
-    submission_flag: bool = False,
-) -> None:
-    """ Создание csv-файла с двумя колонками: (filename, target).
-    filename_csv: str - название csv файла.
-    list_final_dict: list[dict] - список предсказанных изображений.
-    analyzer: function - функция подсчёта таргета на изображении.
-    return: None """
-
-    list_filename = []
-    list_target = []
-
-    # Определяю target каждого изображения.
-    for idx, final_dict in enumerate(list_final_dict):
-
-        list_filename.append(final_dict['filename'])
-
-        if isinstance(analyzer, Callable):
-            analyzed_target_class = analyzer(
-                final_dict['classes'],
-                final_dict['conf'],
-            )
-        else:
-            analyzed_target_class = analyzer[idx][0]
-
-        list_target.append(analyzed_target_class)
-
-    df = pd.DataFrame(
-        {
-            'name': list_filename,
-            'class': list_target,
-        }
-    )
-
-    df.to_csv(os.path.join(dir_save, filename_csv), index=False)
-
-
 def create_csv_custom(
     filename_csv: str,
     list_final_dict: list,
@@ -163,3 +122,27 @@ def save_imgs(list_final_dict: list, dir_save: str) -> list[dict]:
         pixels = np.array(image)
         plt.imsave(path, pixels)
     return list_final_dict
+
+
+def convert_images_to_video(images: list[np.ndarray], filename: str):
+    """ Соединение изображений в одно видео.
+    images: np.array - массив изображений.
+    filename: str - название выходного файла.
+    return - видео """
+
+    img = images[0]
+
+    height = img.shape[0]
+    width = img.shape[1]
+    fps = 24
+
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    
+    video = cv2.VideoWriter(filename, fourcc, fps, (width, height))
+    
+    for img in images:
+        # img =  cv2.cvtColor(img, cv2.COLO)
+        video.write(img)
+    
+    video.release()
+    return video
