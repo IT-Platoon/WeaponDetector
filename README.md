@@ -13,6 +13,8 @@ https://github.com/IT-Platoon/WeaponDetector/releases/latest
 Модели для выбора:
 https://drive.google.com/drive/folders/1btiD9tmcXb8exlLmJth9-5YqBZACS2-4
 
+Базовая модель для проверки работы в несобранном виде находится по пути ```weapon_detector/ml/weights```
+
 ## Установка
 
 Установка производилась на OS Linux Gnome Manjaro
