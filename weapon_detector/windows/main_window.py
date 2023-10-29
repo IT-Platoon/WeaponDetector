@@ -88,13 +88,27 @@ class MainWindow(QtWidgets.QMainWindow):
                 "/",
                 "PyTorch (*.pt)",
             )
-            self.result_model = load_model(self.model_path)
-            result = self.compute_result()
-            self.result_model = None
-            self.result_func = None
-            self.model_path = ""
-            if result:
-                self.finish_detecting(result)
+            if self.model_path:
+                self.result_model = load_model(self.model_path)
+                if method_load == MethodsLoad.WEBCAM:
+                    self.result_func(
+                        self.result_model,
+                        self.files,
+                        self.directory_to_save,
+                    )
+                else:
+                    result = self.compute_result()
+                    self.result_model = None
+                    self.result_func = None
+                    self.model_path = ""
+                    if result:
+                        self.finish_detecting(result)
+            else:
+                QtWidgets.QMessageBox.warning(
+                    self,
+                    "Ошибка!",
+                    "Выберите модель машинного обучения",
+                )
         else:
             QtWidgets.QMessageBox.warning(
                 self,
