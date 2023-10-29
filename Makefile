@@ -6,7 +6,8 @@ install_linux: ##@Application Create Virtual Enviroment and Install Requirements
 	pip install --no-binary opencv-python opencv-python && \
 	pip install -Ur requirements.txt && \
 	pip install torch torchvision --extra-index-url https://download.pytorch.org/whl/cpu && \
-	pip install ultralytics
+	pip install ultralytics && \
+	pip install dill
 
 install_windows: ##@Application Create Virtual Enviroment and Install Requirements on Windows
 	./build.bat install
@@ -29,6 +30,7 @@ build_linux:  ##@Code build in Application with Pyinstaller on Linux
 	. ./venv/bin/activate && \
 	pyinstaller $(APPLICATION_NAME).spec && \
 	cp -r ./venv/lib/python3.11/site-packages/ultralytics ./dist/$(APPLICATION_NAME)/$(APPLICATION_NAME)
+	cp -r ./venv/lib/python3.11/site-packages/dill ./dist/$(APPLICATION_NAME)/$(APPLICATION_NAME)
 
 build_windows:  ##@Code build in Application with Pyinstaller on Windows
 	make install_windows && \
